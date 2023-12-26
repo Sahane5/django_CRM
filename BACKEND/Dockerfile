@@ -1,22 +1,12 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9
+FROM python:3.8-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+RUN pip install --upgrade pip
 
-# Set the working directory in the container
-WORKDIR /usr/src/app
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
 
-# Copy and install requirements
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+COPY . /app
+WORKDIR /app
 
-# Copy the Django project files into the container
-COPY . .
-
-# Expose port 8000 (or the port your Django app is running on)
-EXPOSE 8000
-
-# Define the command to run your Django app
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "BACKEND.wsgi:application"]
+COPY ./entrypoint.sh .
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]
