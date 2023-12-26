@@ -1,25 +1,36 @@
-version: '3'
+version: '3.7'
 
 services:
+  BACKEND: 
+    volumes:
+      - static:/static
+      env_file:
+        - .env
+    build:
+      context: ./BACKEND
+      ports:
+        - "8000:8000"
+
   frontend:
-    build:
-      context: ./frontend  # Adjust the path
-    ports:
-      - "3000:3000"
-    depends_on:
-      - backend
+    build: 
+      context: ./frontend
+    volumes:
+      - frontend:/app/build
 
-  backend:
-    build:
-      context: ./BACKEND  # Adjust the path
-    ports:
-      - "8000:8000"
-    environment:
-      - DJANGO_DEBUG=True
-      - DJANGO_DB_ENGINE=django.db.backends.sqlite3
-      - DJANGO_DB_NAME=/usr/src/app/db.sqlite3
-      # Add other environment variables as needed
+  nginx:
+    build: 
+      context: ./nginx
+    volumes:
+      - static:/static 
+      - frontend:/var/www/frontend
+     ports:
+       - "80:80"
+     depends_on:
+       - BACKEND 
+       - frontend
+       
+volumes:
+  static:
+  frontend:
 
-  volumes:
-    - ./BACKEND/db.sqlite3:/usr/src/app/db.sqlite3
-
+                             
