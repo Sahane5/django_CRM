@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: ./frontend  # Adjust the path
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./BACKEND  # Adjust the path
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_DEBUG=True
+      - DJANGO_DB_ENGINE=django.db.backends.sqlite3
+      - DJANGO_DB_NAME=/usr/src/app/db.sqlite3
+      # Add other environment variables as needed
+
+  volumes:
+    - ./BACKEND/db.sqlite3:/usr/src/app/db.sqlite3
+
