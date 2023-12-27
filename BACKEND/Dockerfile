@@ -1,12 +1,15 @@
-FROM python:3.8-slim
+FROM python:3.10
 
-RUN pip install --upgrade pip
+ENV PYTHONBUFFERED = 1
 
-COPY ./requirements.txt .
-RUN pip install -r requirements.txt
-
-COPY . /app
 WORKDIR /app
 
-COPY ./entrypoint.sh .
-ENTRYPOINT ["sh", "/app/entrypoint.sh"]
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY . .
+
+EXPOSE 8000
+CMD ["python","manage.py","runserver"]
+
